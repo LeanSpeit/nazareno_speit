@@ -14,7 +14,10 @@ import { services } from "./components/services";
 const $root = document.getElementById("root");
 
 // Realizar una solicitud para obtener la sesión del usuario actual
-await fetch("http://localhost:4321/auth/me", {})
+await fetch("http://localhost:4321/api/auth/me", {
+  method: "GET",
+  credentials: "include", // Esto permite que se envíen las cookies
+})
   .then((response) => {
     // Verificar si la respuesta es exitosa
     if (response.ok) {
@@ -43,3 +46,5 @@ await fetch("http://localhost:4321/auth/me", {})
       });
     }, 1000);
   });
+
+

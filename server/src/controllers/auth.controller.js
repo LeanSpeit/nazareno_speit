@@ -12,26 +12,34 @@ export const signInCtrl = async (req, res) => {
     }
 
     const token = await createJwt(user.id);
+    
+    // Establecer la cookie de manera segura
+    res.cookie("token", token, { httpOnly: true, secure: false }); // Cambia secure a true en producción
 
-    res.cookie("token", token, { httpOnly: true });
-
-    res.status(200).json({ token, user });
+    res.status(200).json({ message: "Login successful", user });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 export const signUpCtrl = async (req, res) => {
   try {
-    // ! Completar la función signUpCtrl
+    const userData = req.body;
+
+    const newUser = await createUser(userData);
+    res.status(201).json({ user: newUser });
   } catch (error) {
+    if (error.message === 'Email already in use') {
+      return res.status(409).json({ message: error.message });
+    }
     res.status(500).json({ message: error.message });
   }
 };
 
-export const signOutCtrl = (_req, res) => {
+export const signOutCtrl = (req, res) => {
   try {
-    // ! Completar la función signOutCtrl
+    res.clearCookie("token");
     res.status(200).json({ message: "Sign out success" });
   } catch (error) {
     res.status(500).json({ message: error.message });
